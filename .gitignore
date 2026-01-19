@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual Environments
+venv/
+env/
+.conda/
+
+# Configuration files with sensitive data
+config.json
+.env
+
+# Data files (personal research data)
+data/*.json
+data/*.csv
+data/*.db
+
+# Logs
+logs/*.log
+logs/*.txt
+
+# Cache files
+*.cache
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+debug_*.html
+*.bak
+
+# Playwright
+.playwright/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Backup files
+*_backup_*
+backups/
