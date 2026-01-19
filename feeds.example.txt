@@ -3,27 +3,27 @@
 # Copy this file to feeds.txt and add your actual journal feeds
 
 # Housing Policy & Urban Governance
-https://www.tandfonline.com/feed/rss/chos20  # Housing Studies  
-https://rss.sciencedirect.com/publication/science/01679236  # Habitat International  
+https://www.tandfonline.com/feed/rss/chos20  # Housing Studies
+https://rss.sciencedirect.com/publication/science/01973975  # Habitat International
 
 # Critical Urban Theory
-https://journals.sagepub.com/action/showFeed?ui=0&mi=ehikzz&ai=2b4&jc=usja&type=etoc&feed=rss  # Urban Studies  
-https://www.tandfonline.com/feed/rss/cjud20  # Journal of Urban Design  
-https://rss.sciencedirect.com/publication/science/01692046  # Cities  
-https://rss.sciencedirect.com/publication/science/10408738  # Urban Affairs Review  
+https://journals.sagepub.com/action/showFeed?ui=0&mi=ehikzz&ai=2b4&jc=usja&type=etoc&feed=rss  # Urban Studies
+https://www.tandfonline.com/feed/rss/cjud20  # Journal of Urban Design
+https://rss.sciencedirect.com/publication/science/01692046  # Cities
+https://rss.sciencedirect.com/publication/science/10408738  # Urban Affairs Review
 
 # Data & Urban Analytics
-https://journals.sagepub.com/action/showFeed?ui=0&mi=ehikzz&ai=2b4&jc=epna&type=etoc&feed=rss  # Environment and Planning A  
-https://journals.sagepub.com/action/showFeed?ui=0&mi=ehikzz&ai=2b4&jc=eupa&type=etoc&feed=rss  # European Urban and Regional Studies  
+https://journals.sagepub.com/action/showFeed?ui=0&mi=ehikzz&ai=2b4&jc=epna&type=etoc&feed=rss  # Environment and Planning A
+https://journals.sagepub.com/action/showFeed?ui=0&mi=ehikzz&ai=2b4&jc=eupa&type=etoc&feed=rss  # European Urban and Regional Studies
 
 # Spatial & Environmental Design
-https://rss.sciencedirect.com/publication/science/03062597  # Landscape and Urban Planning  
+https://rss.sciencedirect.com/publication/science/03062597  # Landscape and Urban Planning
 
 # Lived Space, Atmospheres & Experience
-https://rss.sciencedirect.com/publication/science/17554586  # Emotion, Space and Society  
-https://www.tandfonline.com/feed/rss/ratr20  # Architectural Theory Review  
-https://journals.sagepub.com/action/showFeed?jc=cgj&type=etoc&feed=rss  # Cultural Geographies  
-https://journals.sagepub.com/action/showFeed?jc=sca&type=etoc&feed=rss  # Space and Culture  
+https://rss.sciencedirect.com/publication/science/17554586  # Emotion, Space and Society
+https://www.tandfonline.com/feed/rss/ratr20  # Architectural Theory Review
+https://journals.sagepub.com/action/showFeed?jc=cgj&type=etoc&feed=rss  # Cultural Geographies
+https://journals.sagepub.com/action/showFeed?jc=sca&type=etoc&feed=rss  # Space and Culture
 
-# Add your specific journal feeds below:
-# https://example-journal.com/rss
+# Add your specific journal feeds below following the format:
+# https://example-journal.com/rss # Example Journal
