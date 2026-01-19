@@ -1,0 +1,71 @@
+{
+  "system": {
+    "version": "0.1.0",
+    "name": "Research Article Manager",
+    "timezone": "Pacific/Auckland"
+  },
+
+  "paths": {
+    "obsidian_vault": "/path/to/your/ObsidianVault",
+    "articles_folder": "Articles",
+    "briefs_folder": "Daily Briefs",
+    "methodologies_folder": "Methodologies",
+    "templates_folder": "templates",
+    "data_dir": "./data",
+    "logs_dir": "./logs"
+  },
+
+  "email": {
+    "provider": "icloud",
+    "address": "your-email@icloud.com",
+    "app_password": "xxxx-xxxx-xxxx-xxxx",
+    "imap_server": "imap.mail.me.com",
+    "imap_port": 993,
+    "smtp_server": "smtp.mail.me.com",
+    "smtp_port": 587,
+    "check_interval_minutes": 30,
+    "send_confirmation": true
+  },
+
+  "zotero": {
+    "enabled": true,
+    "library_type": "user",
+    "library_id": "your-library-id",
+    "api_key": "your-zotero-api-key",
+    "collection_name": "Daily Articles"
+  },
+
+  "ai": {
+    "provider": "gemini",
+    "gemini_api_key": "your-gemini-api-key",
+    "model": "gemini-2.0-flash-exp",
+    "temperature": 0.3,
+    "enable_summary": true,
+    "enable_methodology_detection": true,
+    "enable_auto_tagging": true
+  },
+
+  "apis": {
+    "elsevier_api_key": "your-elsevier-key",
+    "crossref_mailto": "your-email@icloud.com"
+  },
+
+  "schedule": {
+    "daily_fetch_time": "05:00",
+    "lookback_days": 0,
+    "max_entries_per_feed": 80
+  },
+
+  "processing": {
+    "sleep_between_requests": 1.5,
+    "enable_playwright_fallback": true,
+    "cache_metadata": true,
+    "max_abstract_length": 8000
+  },
+
+  "logging": {
+    "level": "INFO",
+    "console": false,
+    "file": true
+  }
+}

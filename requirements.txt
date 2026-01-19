@@ -1,0 +1,31 @@
+# RSS Feed Processing
+feedparser>=6.0.10
+
+# HTTP Requests & APIs
+requests>=2.31.0
+
+# Web Scraping
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+playwright>=1.40.0
+
+# AI Integration
+google-generativeai>=0.3.0
+
+# Zotero Integration
+pyzotero>=1.5.0
+
+# Terminal Interface
+rich>=13.7.0
+
+# Template Rendering
+jinja2>=3.1.0
+
+# Configuration
+python-dotenv>=1.0.0
+
+# Testing
+pytest>=7.4.0
+
+# Date/Time Handling
+python-dateutil>=2.8.0
