@@ -33,4 +33,24 @@ Personal system for staying on top of academic literature with automated daily d
 
 ## Status
 
-🚧 Just getting started - building with GitHub Copilot!
+**Completed:**
+- ✅ RSS Feed Fetcher - Collects articles from 13 academic journals
+- ✅ Deduplicator - Tracks seen articles to prevent duplicates
+- ✅ DOI extraction from RSS feeds
+
+**In Progress:**
+- 🚧 Metadata fetcher (Crossref/OpenAlex/Elsevier APIs)
+- 🚧 AI analyser (Gemini integration)
+- 🚧 Email handler (iCloud SMTP/IMAP)
+- 🚧 Obsidian note writer
+- 🚧 Zotero integration
+- 🚧 Main orchestrator
+
+## Research Focus
+
+Currently tracking journals in:
+- Housing Policy & Urban Governance
+- Critical Urban Theory  
+- Data & Urban Analytics
+- Spatial & Environmental Design
+- Lived Space, Atmospheres & Experience

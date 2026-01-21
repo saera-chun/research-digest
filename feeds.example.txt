@@ -14,7 +14,7 @@ https://rss.sciencedirect.com/publication/science/10408738  # Urban Affairs Revi
 
 # Data & Urban Analytics
 https://journals.sagepub.com/action/showFeed?ui=0&mi=ehikzz&ai=2b4&jc=epna&type=etoc&feed=rss  # Environment and Planning A
-https://journals.sagepub.com/action/showFeed?ui=0&mi=ehikzz&ai=2b4&jc=eupa&type=etoc&feed=rss  # European Urban and Regional Studies
+https://journals.sagepub.com/action/showFeed?ui=0&mi=ehikzz&ai=2b4&jc=eura&type=etoc&feed=rss  # European Urban and Regional Studies
 
 # Spatial & Environmental Design
 https://rss.sciencedirect.com/publication/science/03062597  # Landscape and Urban Planning
