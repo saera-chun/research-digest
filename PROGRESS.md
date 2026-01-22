@@ -361,6 +361,16 @@ python -m pytest tests/test_backlog_manager.py -v
 ```
    - **Note:** Designed to integrate with email reply processing and Obsidian writer in next steps
 
+5. ✅ **Metadata Extractor** - Implemented and integrated
+   - Created `src/analysers/metadata_extractor.py` and used `src/analysers/dictionaries.py` for lookup tables
+   - Extracts `geography`, `methods`, and `stakeholders` from Title → Keywords → Abstract and adds them to enriched article dicts
+   - Integrated extraction into `MetadataFetcher.fetch_metadata` (extracted fields now included in cache and returned results)
+   - **Tests:** `tests/test_metadata_extractor.py` + updated `tests/test_metadata_fetcher.py` — all metadata tests pass locally (18 tests)
+```bash
+python -m pytest tests/test_metadata_extractor.py tests/test_metadata_fetcher.py -q
+```
+   - **Note:** Ran `scripts/run_rank_extraction.py` on real feeds; extractor populated fields for several sample articles (geography, methods, stakeholders). Next: wire extracted fields into Obsidian writer and consider using them for ranking boosts or confidence tagging.
+
 **Phase 2: AI Analysis (Week 3-4)**
 - 📋 Content filtering & relevance scoring
 - 📋 Trend analysis by journal

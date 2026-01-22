@@ -11,6 +11,7 @@ import json
 import time
 from pathlib import Path
 from typing import Dict, Optional, List
+from src.analysers.metadata_extractor import extract_all
 from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
@@ -85,7 +86,7 @@ class MetadataFetcher:
                 - journal: str (clean journal name from API)
         """
         doi = article.get('doi')
-        
+
         # Check cache first
         if doi and doi in self.cache:
             cached = self.cache[doi]
@@ -93,38 +94,61 @@ class MetadataFetcher:
             cache_date = datetime.fromisoformat(cached.get('cached_at', '2000-01-01'))
             if datetime.now() - cache_date < timedelta(days=30):
                 logger.debug(f"Cache hit: {doi}")
-                return {**article, **cached['metadata']}
-        
+                merged = {**article, **cached['metadata']}
+                # Ensure extracted fields exist; if not, extract and persist to cache
+                if not any(k in merged for k in ('geography', 'methods', 'stakeholders')):
+                    extracted = extract_all(merged)
+                    merged.update(extracted)
+                    # update cache metadata to include extracted fields
+                    try:
+                        self.cache[doi]['metadata'].update(extracted)
+                        self._save_cache()
+                    except Exception:
+                        pass
+                return merged
+
         # Try fetching from APIs
         metadata = None
-        
+
         if doi:
             # Try Crossref first
             metadata = self._fetch_from_crossref(doi)
-            
+
             # Fallback to OpenAlex if Crossref fails or has no abstract
             if not metadata or not metadata.get('abstract'):
                 metadata = self._fetch_from_openalex(doi)
-        
-        # If we got metadata, cache it and merge with article
+
+        # If we got metadata, merge and extract
         if metadata:
+            merged = {**article, **metadata}
+            extracted = extract_all(merged)
+            merged.update(extracted)
+
             if doi:
-                self.cache[doi] = {
-                    'cached_at': datetime.now().isoformat(),
-                    'metadata': metadata
-                }
-                self._save_cache()
-            
-            return {**article, **metadata}
-        
-        # No metadata found, return article as-is with empty fields
+                # Store merged metadata including extracted fields in cache
+                try:
+                    self.cache[doi] = {
+                        'cached_at': datetime.now().isoformat(),
+                        'metadata': merged
+                    }
+                    self._save_cache()
+                except Exception:
+                    logger.debug("Failed to save extracted fields to cache")
+
+            return merged
+
+        # No metadata found, return article with fallback abstract and extracted fields
         logger.warning(f"No metadata found for: {article.get('title', 'Unknown')[:50]}")
-        return {
+        fallback_abstract = self._extract_abstract_from_rss_summary(article.get('summary'))
+        result = {
             **article,
-            'abstract': self._extract_abstract_from_rss_summary(article.get('summary')),  # Try RSS summary as fallback
+            'abstract': fallback_abstract,
             'authors': [],
             'keywords': [],
         }
+        extracted = extract_all(result)
+        result.update(extracted)
+        return result
     
     def _fetch_from_crossref(self, doi: str) -> Optional[Dict]:
         """Fetch metadata from Crossref API"""
@@ -148,7 +172,6 @@ class MetadataFetcher:
                     'journal': data.get('container-title', [None])[0],
                 }
                 
-                # Extract publication date if available
                 if 'published' in data or 'published-print' in data:
                     date_parts = data.get('published', data.get('published-print', {})).get('date-parts', [[]])[0]
                     if date_parts:
