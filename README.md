@@ -4,31 +4,30 @@ Personal system for staying on top of academic literature with automated daily d
 
 ## What It Does
 
-**Morning (5 AM automated):**
-- 📰 Fetches articles from journal RSS feeds
-- 📊 Rule-based ranking shows top 15 (AI learning in Phase 2+)
-- 📧 Sends digest with NEW articles + BACKLOG insights
+**Daily (5 AM):**
+- 📰 Fetches articles from 13 journal RSS feeds
+- 🔍 Enriches with metadata (Crossref → OpenAlex APIs)
+- 📊 Keyword-based ranking (transparent scoring)
+- 📧 Sends top 15 articles with total count
 
-**Throughout the Day:**
-- 📱 Review and reply with tier codes: `1F, 2A, 3M, 4S`
-  - **F** = Full read (deep dive + PDF)
-  - **A** = Abstract only (quick scan)
-  - **M** = Methodology only (file for reference)
-  - **S** = Skip (mark as seen/ignore)
-  - **No response** = Article reappears tomorrow
-- ⚙️ System processes selections automatically
+**You Reply:**
+- 📱 Email reply with tier codes: `1F, 2A, 3M, 4S`
+  - **F** = Full read (Zotero + Obsidian note)
+  - **A** = Abstract scan (Obsidian note only)
+  - **M** = Methodology ref (Obsidian note only)
+  - **S** = Skip (seen.json only, no notes)
+  - **No response** = Reappears tomorrow
+- ⚙️ Auto-processed every 2 hours until 3 PM
 
 **Creates:**
-- 📝 Skeleton notes in Obsidian (all tiers, progressive enhancement)
-- 📅 Daily digest note with AI summary
-- 🏷️ Auto-updated methodology MOCs
-- 📚 Zotero entries (FULL tier only)
+- 📝 Obsidian notes (F/A/M tiers) with structured frontmatter
+- 🏷️ Auto-extracted metadata: geography, methods, stakeholders
+- 📚 Zotero entries (F tier only, avoids bloat)
+- 🔗 Automatic linking via Zotero Integration plugin
 
-**Plus:**
-- 🔍 AI trend analysis by journal
-- 🧩 Thematic clustering of backlog
-- 📊 Cross-cutting theme detection
-- 🗃️ Separate queues for FULL/ABSTRACT reads
+**Weekly & Monthly:**
+- 📊 Backlog analysis (Saturday)
+- 📈 Field trends & reading insights (Monthly)
 
 ## Tech Stack
 
@@ -40,32 +39,38 @@ Personal system for staying on top of academic literature with automated daily d
 
 ## Status
 
-**Phase 1: Data Collection (Week 1-2)**
-- ✅ RSS Fetcher - 13 journals, ~500 articles/fetch
-- ✅ Deduplicator - DOI+URL dual tracking
-- 🚧 Metadata Fetcher - Crossref/OpenAlex/Elsevier APIs
-- 📋 Backlog Manager - Multi-tier queue system
+**Phase 1: Core Pipeline - CURRENT (Week 1-2)**
+- ✅ RSS Fetcher - 13 journals, ~500 articles/fetch, RSS summary extraction
+- ✅ Deduplicator - DOI+URL dual tracking, 314 entries from manual curation
+- ✅ Metadata Fetcher - Crossref → OpenAlex → RSS fallback, 30-day caching
+- 📋 **Next:** Article Ranker - Keyword scoring + metadata extraction
 
-**Phase 2: AI Analysis (Week 3-4)**
-- 📋 Content filtering & relevance scoring
-- 📋 Trend analysis by journal
-- 📋 Thematic clustering of backlog
-- 📋 Methodology detection
+**Phase 2: Configuration & Output (Week 3-4)**
+- 📋 Config system (boost_keywords, paths, API keys)
+- 📋 Metadata extractor (geography, methods, stakeholders)
+- 📋 Obsidian Writer (structured notes with frontmatter)
+- 📋 Zotero integration (PyZotero, F tier only)
 
-**Phase 3: User Interface (Week 5-6)**
-- 📋 Email handler (iCloud SMTP/IMAP)
-- 📋 Reply parser (`1F, 2A, 3M, 4S` format)
-- 📋 CLI interface with hotkeys
+**Phase 3: User Interface (Week 5)**
+- 📋 Email Handler (iCloud SMTP/IMAP)
+- 📋 Reply Parser & Processor (F/A/M/S selections)
+- 📋 Email templates (HTML with styling)
 
-**Phase 4: Output (Week 7-8)**
-- 📋 Obsidian writer (skeleton notes, templates)
-- 📋 Zotero integration (FULL tier)
-
-**Phase 5: Orchestration (Week 9-10)**
-- 📋 Main pipeline + scheduler
+**Phase 4: Orchestration (Week 6)**
+- 📋 Main Pipeline (wire all modules)
+- 📋 Scheduler (launchd, 5 AM daily)
 - 📋 Error handling & logging
 
-**Timeline:** ~10 weeks to production
+**Phase 5: AI Analysis (Week 7-8)**
+- 📋 Weekly email (Gemini backlog themes)
+- 📋 Monthly email (field trends)
+
+**Phase 6: Enhancements (Week 9-10)**
+- 📋 Enhanced Obsidian features (author pages, MOC updates)
+- 📋 PDF fetching (Open Access)
+- 📋 Advanced Zotero features
+
+**Timeline:** ~10 weeks to production, currently ~15% complete
 
 ## Architecture
 
@@ -84,33 +89,37 @@ RSS Feeds → Metadata APIs → AI Analysis → Email Digest
 ### File Structure
 ```
 data/
-├── seen.json              # All scored articles (F/A/M/S)
-├── queued_full.json       # Deep read queue (F)
-├── queued_abstract.json   # Abstract queue (A)
-├── methodologies.json     # Methodology library (M)
-└── doi_cache.json         # API response cache
+├── seen.json              # All scored articles (F/A/M/S) with tier info
+└── doi_cache.json         # API response cache (30-day expiry)
 
-Note: Unscored articles are not added to seen.json, so they 
-reappear in tomorrow's fetch until you make a decision
+Obsidian vault (single source of truth):
+├── Papers/                # All article notes (F/A/M tiers)
+└── MOCs/                  # Methodology maps of content
+
+Note: Unscored articles not added to seen.json → reappear tomorrow
+Note: Queues managed via Obsidian dataview queries on status field
 ```
 
-### Email Digest Structure
+### Email Structure
+
+**Daily (Simple - Build Habit):**
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🆕 NEW ARTICLES (15 shown, 35 filtered)
-🤖 AI Trend Analysis
-   • Housing Studies: climate adaptation surge...
-   • Urban Studies: ML dominates, mobility patterns...
-[Articles 1-15]
-Reply: 1F, 2A, 3M, 4S or "SHOW ALL"
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📚 BACKLOG STATUS
-🔥 FULL QUEUE (5)
-   🤖 Clusters: Urban resilience (3), Affordability (2)
-📄 ABSTRACT QUEUE (18)
-   🤖 Cross-cutting: "Community voice" in 6 papers
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📬 RESEARCH DIGEST - 22 January 2026
+TOP 15 ARTICLES (208 total unread)
+
+1. Housing policy and tenure security in Auckland
+   Urban Studies • housing-policy, tenure-security
+
+[... items 2-15 ...]
+
+REPLY WITH: 1F, 2A, 3M, 4S (or "SHOW ALL")
 ```
+
+**Weekly (Saturday - Backlog Nudge):**
+- Vault stats, emerging themes (AI), oldest articles, reading suggestions
+
+**Monthly (Field Trends):**
+- Reading stats, hot topics, methodology landscape, geographic coverage
 
 ## Research Focus
 

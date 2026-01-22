@@ -258,6 +258,53 @@ After initial curation revealed 200+ interesting articles, refined system design
 See README.md for full design details.
 
 
+### Architecture Refinement (Cont.)
+
+**Design evolution after initial testing:**
+
+1. **Tier system simplified:** 5 tiers → 4 tiers (removed N tier, redundant with unscored behavior)
+
+2. **Hybrid Zotero approach decided:**
+   - F tier: Zotero entry + Obsidian note (via Zotero Integration plugin)
+   - A/M tier: Obsidian note only (no Zotero bloat)
+   - S tier: seen.json only (zero clutter)
+   - Rationale: Leverage Zotero's strengths (PDF management, citations) without cluttering library
+
+3. **Obsidian-centric data model:**
+   - Single source of truth for research knowledge
+   - Queues managed via dataview queries on `status` field (not separate JSON files)
+   - Progressive enhancement: skeleton notes → user adds content over time
+
+4. **Multi-cadence email system:**
+   - Daily (5 AM): Simple ranked list, build 1 article/day habit
+   - Weekly (Saturday): Backlog stats + AI thematic analysis
+   - Monthly (1st): Field trends, reading insights, geographic coverage
+   - Rationale: RSS too slow (1-2 articles/day) for daily AI trends
+
+5. **Metadata extraction for policy work:**
+   - Auto-extract: geography, methods, stakeholders (from title/keywords/abstract)
+   - Keyword dictionaries for pattern matching
+   - Separate frontmatter fields (not mixed in keywords array)
+   - Enables multi-dimensional filtering: "Auckland qualitative studies about renters"
+
+6. **Abstract acquisition strategy:**
+   - Tested Semantic Scholar API → rejected (poor social science coverage)
+   - Discovered RSS summaries provide 40-50% partial abstracts (SAGE journals)
+   - Metadata fetcher now has 3-level fallback: Crossref → OpenAlex → RSS summary
+
+7. **Scoring approach simplified:**
+   - Keyword-only scoring (no journal weights, no recency bias)
+   - Config-driven boost_keywords dictionary
+   - Transparent, tunable, no black-box AI ranking
+
+8. **Volume control philosophy:**
+   - No artificial caps or auto-skip
+   - Unscored articles reappear until scored
+   - Natural stabilization expected (~40 articles/month steady state)
+   - Email shows top 15, displays total count, "SHOW ALL" option available
+
+See `DESIGN.md` for complete finalized system design.
+
 ### Phase 1: Data Collection (Cont.)
 
 
@@ -279,9 +326,25 @@ python -m pytest tests/test_metadata_fetcher.py -v
 ```
    - **Note:** Abstracts not available via free APIs (expected limitation). 15% of articles lack DOIs (ScienceDirect). Keyword scoring uses title (always) + keywords (when available).
 
+4. ✅ **Article Ranker** - Built and tested
+   - Created `src/analysers/article_ranker.py`
+   - Scores articles by matching user-defined boost keywords
+   - Supports case-insensitive, partial keyword matching (hyphens/spaces normalized)
+   - Ranks articles by total score (no journal weighting or recency bias)
+   - Configurable via `config.json` (boost_keywords)
+   - Returns sorted list with score statistics (min, max, mean, median, zero scores)
+   - Ranking output validated with real data (test_ranker.py)
+   - **Tests:** `tests/test_article_ranker.py`
+     - Initialization and config loading
+     - Case-insensitive and partial keyword matching
+     - Score calculation across title, keywords, abstract
+     - Ranking and sorting logic
+     - Top-N retrieval and statistics
+     - Handling empty lists and missing fields
+```bash
+python -m pytest tests/test_article_ranker.py -v
+```
 
-
-- 📋 Article Ranker - Keyword-based scoring
 - 📋 Backlog Manager - Multi-tier queue system
 
 **Phase 2: AI Analysis (Week 3-4)**

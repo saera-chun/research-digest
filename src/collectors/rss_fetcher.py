@@ -68,6 +68,7 @@ class RSSFetcher:
                     'published_date': entry.get('published', ''),
                     'feed_title': feed_title,
                     'feed_url': feed_url,
+                    'summary': entry.get('summary', '').strip(),  # RSS summary (may contain partial abstract)
                 }
                 
                 if article['title'] and article['url']:

@@ -121,7 +121,7 @@ class MetadataFetcher:
         logger.warning(f"No metadata found for: {article.get('title', 'Unknown')[:50]}")
         return {
             **article,
-            'abstract': None,
+            'abstract': self._extract_abstract_from_rss_summary(article.get('summary')),  # Try RSS summary as fallback
             'authors': [],
             'keywords': [],
         }
@@ -220,6 +220,24 @@ class MetadataFetcher:
         abstract = ' '.join(abstract.split())
         
         return abstract if abstract else None
+    
+    def _extract_abstract_from_rss_summary(self, summary: Optional[str]) -> Optional[str]:
+        """Extract abstract text from RSS summary field (often contains partial abstracts)"""
+        if not summary or len(summary) < 50:
+            return None
+        
+        # Clean HTML and extract meaningful text
+        cleaned = self._clean_abstract(summary)
+        
+        if not cleaned:
+            return None
+        
+        # Filter out non-abstract content (volume/issue info, publication dates, etc.)
+        # Look for sentences that seem like abstract content (longer, substantive text)
+        if len(cleaned) > 100 and not cleaned.startswith('Volume ') and not cleaned.startswith('Publication date'):
+            return cleaned
+        
+        return None
     
     def _extract_authors(self, author_list: List[Dict]) -> List[str]:
         """Extract author names from Crossref author data"""
