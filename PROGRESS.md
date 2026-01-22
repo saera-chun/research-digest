@@ -346,6 +346,20 @@ python -m pytest tests/test_article_ranker.py -v
 ```
 
 - 📋 Backlog Manager - Multi-tier queue system
+4. ✅ **Backlog Manager** - Built and tested
+   - Created `src/utils/backlog_manager.py`
+   - Stores queued articles in `data/backlog.json` with fields: title, doi, url, tier, status, date_added, date_processed, note
+   - API: `add_to_backlog`, `list_backlog`, `mark_processed`, `remove`, `get_stats`
+   - Mirrors Deduplicator patterns for DOI/url-based identification and persistence
+   - **Tests:** `tests/test_backlog_manager.py`
+     - Add/list articles
+     - Mark processed and status filtering
+     - Persistence across instances
+     - Removal and stats
+```bash
+python -m pytest tests/test_backlog_manager.py -v
+```
+   - **Note:** Designed to integrate with email reply processing and Obsidian writer in next steps
 
 **Phase 2: AI Analysis (Week 3-4)**
 - 📋 Content filtering & relevance scoring
