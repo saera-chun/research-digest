@@ -172,7 +172,7 @@ python -m playwright install chromium
 2. Created example `config.json` and `feeds.txt`
 
 
-### RSS fetcher module
+### Phase 1: Data Collection 
 
 Phase 1: Build & Test Core Collectors (one at a time)
 
@@ -213,41 +213,92 @@ python -m pytest tests/test_rss.py -v
 python -m pytest tests/test_deduplicator.py -v
 ```
 
+
 ## 2026-01-21
 
-### Manual feed curation completed:
+### Manual feed curation
 
-Manually reviewed all 13 feeds (11 with articles, feeds 6/9/13 empty)
-Built initial seen.json with 314 entries
-Fixed Feed 8 URL error (changed jc=eupa to jc=eura in feeds.example.txt)
-Full pipeline test:
+- Reviewed all 13 feeds: 11 with articles, feeds 6/9/13 empty
+- Built initial `seen.json` with 314 entries  
+- Fixed Feed 8 URL error (`jc=eupa` → `jc=eura`)
+- Created helper scripts for feed review and testing
 
-Tested complete RSS + deduplication system
-517 articles fetched → 314 in seen.json → 309 filtered out → 208 new articles remaining
-Verified deduplication works correctly across all feeds
+### Full pipeline test
 
-Core modules working: RSS fetcher + deduplicator
-seen.json database established
-Helper scripts for manual review
-Fixed feed URL
+- RSS + deduplication: 517 fetched → 314 seen → 208 new
+- All tests passing
 
 
-3. Metadata Fetcher → test it works
-4. Connect them together → test the pipeline
+## 2026-01-22
 
-Phase 2: Add AI Analysis
-5. AI Analyzer → test methodology detection
-6. Connect to collectors → test full pipeline
+### Architecture refinement
 
-Phase 3: User Interfaces
-7. Email sender → test sending
-8. Email receiver/parser → test replies
-9. CLI interface → alternative option
+After initial curation revealed 200+ interesting articles, refined system design:
 
-Phase 4: Output Writers
-10. Obsidian writer → test note creation
-11. Zotero integration → test syncing
+**Key changes:**
+- Multi-tier selection: FULL (deep read) / ABSTRACT (scan) / METHOD (file only) / SKIP
+- Enhanced email: NEW section (filtered + trends) + BACKLOG section (thematic analysis)
+- Queue files: `queued_full.json`, `queued_abstract.json` (unscored articles reappear next day)
+- Obsidian: skeleton notes for F/A/M tiers, progressive enhancement
+- Selection format: Email reply `"1F, 2A, 3M, 4S"` or CLI with hotkeys
 
-Phase 5: Put it all together
-12. Main orchestrator script
-13. Scheduling & automation
+**Filtering approach:**
+- Keyword-based ranking: articles scored by matching boost keywords (no exclusions)
+- Config structure: `{"boost_keywords": {"spatial_methods": 40, "housing_policy": 40, ...}, "exclude_patterns": []}`
+- Pure keyword scoring, transparent and tunable
+- AI learning layer optional for future enhancement
+
+**Volume control:**
+- Email shows top 15 articles by keyword score
+- Header displays total count (e.g., "15 shown, 193 total")
+- User can reply "SHOW ALL" to see full list
+- No auto-skip: unscored articles reappear until scored
+- Simple approach for beta testing, adjust based on usage patterns
+
+See README.md for full design details.
+
+
+### Phase 1: Data Collection (Cont.)
+
+
+3. ✅ **Metadata Fetcher** - Built and tested
+   - Created `src/collectors/metadata_fetcher.py`
+   - Fetches metadata from Crossref API (primary) and OpenAlex API (fallback)
+   - Extracts: canonical title (overrides RSS), authors, keywords, journal name, publication date
+   - 30-day caching in `data/doi_cache.json` (avoids redundant API calls)
+   - Rate limiting: 10 req/sec (conservative, polite to free APIs)
+   - Graceful degradation: returns empty fields if APIs fail
+   - **Tests:** `tests/test_metadata_fetcher.py`
+     - Cache persistence and retrieval
+     - Crossref and OpenAlex API parsing
+     - Abstract cleaning and author extraction
+     - Rate limiting enforcement
+     - Error handling
+```bash
+python -m pytest tests/test_metadata_fetcher.py -v
+```
+   - **Note:** Abstracts not available via free APIs (expected limitation). 15% of articles lack DOIs (ScienceDirect). Keyword scoring uses title (always) + keywords (when available).
+
+
+
+- 📋 Article Ranker - Keyword-based scoring
+- 📋 Backlog Manager - Multi-tier queue system
+
+**Phase 2: AI Analysis (Week 3-4)**
+- 📋 Content filtering & relevance scoring
+- 📋 Trend analysis by journal
+- 📋 Thematic clustering of backlog
+- 📋 Methodology detection
+
+**Phase 3: User Interface (Week 5-6)**
+- 📋 Email handler (iCloud SMTP/IMAP)
+- 📋 Reply parser (`1F, 2A, 3M, 4N, 5S` format)
+- 📋 CLI interface with hotkeys
+
+**Phase 4: Output (Week 7-8)**
+- 📋 Obsidian writer (skeleton notes, templates)
+- 📋 Zotero integration (FULL tier)
+
+**Phase 5: Orchestration (Week 9-10)**
+- 📋 Main pipeline + scheduler
+- 📋 Error handling & logging
